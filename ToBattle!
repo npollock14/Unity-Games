@@ -1,0 +1,434 @@
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class main extends JFrame { // defining the elements
+	public static boolean battling = false;
+	public static boolean isStarted = false;
+	public static int heroAttack = 5;
+	public static int currHeroAttack = 5;
+	public static int heroDefence = 5;
+	public static int ttlHeroDefence = 5;
+	public static int bMultiplier;
+	public static int bounty;
+	public static String heroWeapon = "Fists";
+	public static String heroArmor = "None";
+	public static String heroName = "Sir Stick Man";
+	public static String enemyName = "Mushroom of Doom";
+	public static int enemyAttack;
+	public static int enemyDefence;
+	public static int waveNumber = 0;
+	public static int gold = 0;
+	public static String enemyWeapon;
+	public static String enemyArmor = "None";
+
+	theHandler handler = new theHandler(); // home/pause
+	JPanel jp = new JPanel();
+	JLabel jl = new JLabel();
+
+	JTextField titleText = new JTextField("To Battle!");
+	JButton startButton = new JButton("Start");
+	JButton aboutButton = new JButton("About");
+	// battle
+	JTextField waveCount = new JTextField();
+	JTextField goldCount = new JTextField();
+	JPanel heroPanel = new JPanel();
+	JLabel heroLabel = new JLabel();
+	JPanel enemyPanel = new JPanel();
+	JLabel enemyLabel = new JLabel();
+	JTextArea heroStats = new JTextArea();
+	JTextArea enemyStats = new JTextArea();
+	JButton battleButton = new JButton("To Battle!");
+	JButton shopButton = new JButton("Shop");
+	JButton pauseButton = new JButton("Pause");
+	// shop
+	JTextField shopText = new JTextField("Shop                   ");
+	// for the coin count - reuse the gold count JTextField initialized in battle
+	JTextField weaponsText = new JTextField("Weapons:");
+	// weapon1 image
+	JPanel weapon1Panel = new JPanel();
+	JLabel weapon1Label = new JLabel();
+	// weapon1 stat box
+	JTextArea weapon1Text = new JTextArea("'The Sword'\n\n+5 Attack\n+2 Defence\n20 gold\n");
+	JButton weapon1Buy = new JButton("Buy?");
+	JTextField vs = new JTextField("V.S.");
+
+	JTextField gameOver = new JTextField("Game Over -_-");
+	JTextArea about = new JTextArea(
+			"'To Battle!' is developed by Nathan Pollock and is in very early acess.\nThe Shop is coming soon so you dont die early on.");
+	JButton hide = new JButton("Hide");
+	JButton shopBack = new JButton("Back");
+	JButton restart = new JButton("Restart");
+
+	public main() // init
+	{
+		// main init
+		setLayout(new FlowLayout());
+		setTitle("To Battle!");
+		setVisible(true);
+		setSize(1000, 800);
+		setSize(999, 800); // idk why but w/out this resize it is "no bueno"
+		setSize(1000, 800);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+		// Home Screen/pause screen init
+		titleText.setFont(new Font("Helventica", Font.BOLD, 80));
+		titleText.setEditable(false);
+		add(titleText);
+
+		jl.setIcon(new ImageIcon("C:\\Users\\npoll\\Desktop\\swords.png"));
+		jp.add(jl);
+		add(jp);
+		// validate();
+
+		startButton.setFont(new Font("Helventica", Font.BOLD, 60));
+		startButton.addActionListener(handler);
+		add(startButton);
+
+		aboutButton.setFont(new Font("Helventica", Font.BOLD, 60));
+		aboutButton.addActionListener(handler);
+		add(aboutButton);
+
+		// battle screen init
+		waveCount.setFont(new Font("Helventica", Font.BOLD, 60));
+		waveCount.setEditable(false);
+		waveCount.setVisible(false);
+		add(waveCount);
+
+		shopText.setFont(new Font("Helventica", Font.BOLD, 60));
+		shopText.setEditable(false);
+		shopText.setVisible(false);
+		add(shopText);
+
+		goldCount.setFont(new Font("Helventica", Font.BOLD, 60));
+		goldCount.setEditable(false);
+		goldCount.setVisible(false);
+		add(goldCount);
+
+		// heroPanel
+		// JLabel heroLabel = new JLabel();
+
+		heroLabel.setIcon(new ImageIcon("C:\\Users\\npoll\\Desktop\\stickGuy.png"));
+		heroPanel.add(heroLabel);
+		heroPanel.setVisible(false);
+		add(heroPanel);
+
+		enemyLabel.setIcon(new ImageIcon("C:\\Users\\npoll\\Desktop\\mushroom.png"));
+		enemyPanel.add(enemyLabel);
+		enemyPanel.setVisible(false);
+		add(enemyPanel);
+
+		heroStats.setEditable(false);
+		heroStats.setFont(new Font("Helventica", Font.PLAIN, 30));
+		heroStats.setVisible(false);
+		heroStats.setText(heroName + "\n\nWeapon: " + heroWeapon + "\nArmor: " + heroArmor + "\nAttack: " + heroAttack
+				+ "\nDefence: " + heroDefence);
+		add(heroStats);
+
+		vs.setEditable(false);
+		vs.setFont(new Font("Helventica", Font.PLAIN, 80));
+		vs.setVisible(false);
+		add(vs);
+
+		enemyStats.setEditable(false);
+		enemyStats.setFont(new Font("Helventica", Font.PLAIN, 30));
+		enemyStats.setVisible(false);
+		enemyStats.setText(enemyName + "\n\n\nWeapon: " + enemyWeapon + "\nArmor: " + enemyArmor + "\nAttack: "
+				+ enemyAttack + "\nDefence: " + enemyDefence);
+		add(enemyStats);
+
+		battleButton.setVisible(false);
+		battleButton.setFont(new Font("Helventica", Font.PLAIN, 60));
+		battleButton.addActionListener(handler);
+		add(battleButton);
+
+		shopButton.setVisible(false);
+		shopButton.setFont(new Font("Helventica", Font.PLAIN, 60));
+		shopButton.addActionListener(handler);
+		add(shopButton);
+
+		pauseButton.setVisible(false);
+		pauseButton.setFont(new Font("Helventica", Font.PLAIN, 60));
+		pauseButton.addActionListener(handler);
+		add(pauseButton);
+
+		gameOver.setVisible(false);
+		gameOver.setEditable(false);
+		gameOver.setFont(new Font("Helventica", Font.PLAIN, 60));
+		add(gameOver);
+
+		about.setVisible(false);
+		about.setFont(new Font("Helventica", Font.PLAIN, 30));
+		about.setEditable(false);
+		add(about);
+
+		hide.setVisible(false);
+		hide.setFont(new Font("Helventica", Font.PLAIN, 30));
+		hide.addActionListener(handler);
+		add(hide);
+
+		weapon1Label.setIcon(new ImageIcon("C:\\Users\\npoll\\Desktop\\swordShop.png"));
+		weapon1Panel.add(weapon1Label);
+		weapon1Panel.setVisible(false);
+		add(weapon1Panel);
+
+		weapon1Text.setEditable(false);
+		weapon1Text.setFont(new Font("Helventica", Font.PLAIN, 20));
+		weapon1Text.setVisible(false);
+		add(weapon1Text);
+
+		weapon1Buy.setVisible(false);
+		weapon1Buy.setFont(new Font("Helventica", Font.PLAIN, 20));
+		weapon1Buy.addActionListener(handler);
+		add(weapon1Buy);
+
+		shopBack.setVisible(false);
+		shopBack.setFont(new Font("Helventica", Font.PLAIN, 40));
+		shopBack.addActionListener(handler);
+		add(shopBack);
+		
+		restart.setVisible(false);
+		restart.setFont(new Font("Helventica", Font.PLAIN, 60));
+		restart.addActionListener(handler);
+		add(restart);
+
+		// shop screen init
+
+	}
+
+	public class theHandler implements ActionListener {
+
+		public void actionPerformed(ActionEvent event) {
+			if (event.getSource() == startButton && isStarted == false) {
+				System.out.println("Home menu - Start Button Clicked");
+				isStarted = true;
+				startButton.setText("Resume");
+				start();
+
+			}
+			if (event.getSource() == startButton && isStarted == true) {
+				System.out.println("Pause menu - Resume Button Clicked");
+				startButton.setText("Resume");
+				mainMenu(false);
+				battleScreen(true);
+
+			}
+			if (event.getSource() == pauseButton) {
+				System.out.println("Battle menu - Pause Button Clicked");
+				pauseScreen();
+
+			}
+			if (event.getSource() == battleButton) {
+				System.out.println("Battle menu - Battle Button Clicked");
+				battling = true;
+				battle();
+			}
+			if (event.getSource() == aboutButton) {
+				System.out.println("Main Menu - about button clicked");
+				about.setVisible(true);
+				hide.setVisible(true);
+
+			}
+			if (event.getSource() == hide) {
+				System.out.println("Main Menu - hide button clicked");
+				about.setVisible(false);
+				hide.setVisible(false);
+			}
+			if (event.getSource() == shopButton) {
+				System.out.println("Shop Menu - Shop button clicked");
+				battleScreen(false);
+				shopScreen(true);
+			}
+			if (event.getSource() == shopBack) {
+				System.out.println("Shop Menu - Shop back Button clicked");
+				shopScreen(false);
+				battleScreen(true);
+
+			}
+			if (event.getSource() == weapon1Buy) {
+				System.out.println("Shop Menu - Weapon1 Buy Button clicked");
+				if(gold>=20) {
+				gold = gold - 20;
+				updateGold();
+				heroWeapon = "The Sword";
+				heroAttack = heroAttack+5;
+				ttlHeroDefence = ttlHeroDefence + 2;
+				if (heroDefence + 2 > ttlHeroDefence) {
+					heroDefence = ttlHeroDefence;
+				} else {
+					heroDefence = heroDefence + 2;
+				}
+updateHeroStats();
+			}
+			}if (event.getSource() == shopBack) {
+				System.out.println("Shop Menu - Shop back Button clicked");
+				shopScreen(false);
+				battleScreen(true);
+
+			}
+			
+		}
+
+		private void updateGold() {
+			goldCount.setText("         Gold: " + gold);
+		}
+
+		private void shopScreen(boolean b) {
+			shopText.setVisible(b);
+			goldCount.setVisible(b);
+			weapon1Panel.setVisible(b);
+			weapon1Text.setVisible(b);
+			weapon1Buy.setVisible(b);
+			shopBack.setVisible(b);
+
+		}
+
+		private void pauseScreen() {
+			battleScreen(false);
+			mainMenu(true);
+
+		}
+
+		private void mainMenu(boolean visibility) {
+			System.out.println("Setting Main Menu Visiblility to " + visibility);
+			titleText.setVisible(visibility);
+			jp.setVisible(visibility);
+			startButton.setVisible(visibility);
+			aboutButton.setVisible(visibility);
+
+		}
+
+		private void battleScreen(boolean visibility) {
+			System.out.println("battle screen turned " + visibility);
+			waveCount.setVisible(visibility);
+			goldCount.setVisible(visibility);
+			heroPanel.setVisible(visibility);
+			heroStats.setVisible(visibility);
+			enemyStats.setVisible(visibility);
+			enemyPanel.setVisible(visibility);
+			battleButton.setVisible(visibility);
+			pauseButton.setVisible(visibility);
+			vs.setVisible(visibility);
+			shopButton.setVisible(visibility);
+
+		}
+
+		private void battle() {
+			// enemy dies
+			// reset hero health
+			// increase wave number
+			// give gold
+			// pick new enemy
+
+			// first - deal damage to enemy
+			// check if they have no health and if they do - see top
+			// else - update their stats
+			// wait a second
+			// deal damage to player
+			// game over if they have no health
+			// update their stats
+			// wait a second
+			enemyDefence = enemyDefence - heroAttack;
+			if (enemyDefence <= 0) {
+				heroDefence = ttlHeroDefence;
+				
+				waveNumber++;
+				waveCount.setText("Wave: " + waveNumber + "                ");
+				gold = gold + bounty;
+				updateGold();
+				chooseEnemy();
+
+			} else {
+				heroDefence = heroDefence - enemyAttack;
+				if (heroDefence > 0) {
+					updateEnemyStats();
+					updateHeroStats();
+				} else {
+					System.out.println("GAME OVER");
+					battleScreen(false);
+					gameOverMenu(true);
+				}
+			}
+
+		}
+
+		private void gameOverMenu(boolean b) {
+			
+			gameOver.setVisible(true);
+			restart.setVisible(true);
+
+		}
+
+		private void updateEnemyStats() {
+			enemyStats.setText(enemyName + "    " + "\n\nWeapon: " + enemyWeapon + "\nArmor: " + enemyArmor
+					+ "\nAttack: " + enemyAttack + "\nDefence: " + enemyDefence);
+			enemyStats.setVisible(false);
+			enemyStats.setVisible(true);
+		}
+
+		private void updateHeroStats() {
+			heroStats.setText(heroName + "        " + "\n\nWeapon: " + heroWeapon + "\nArmor: " + heroArmor
+					+ "\nAttack: " + heroAttack + "\nDefence: " + heroDefence);
+		}
+
+		private void start() {
+			waveNumber++;
+			System.out.println("Making Home Menu Disappear");
+			titleText.setVisible(false);
+			jp.setVisible(false);
+			startButton.setVisible(false);
+			startButton.setText("Resume");
+			aboutButton.setVisible(false);
+			waveCount.setText("Wave: " + waveNumber + "                ");
+			goldCount.setText("         Gold: " + gold);
+			System.out.println("Making the Battle Screen Appear");
+			chooseEnemy();
+			updateHeroStats();
+			battleScreen(true);
+
+		}
+
+		private void chooseEnemy() {
+			if (waveNumber < 20) {
+				bounty = ThreadLocalRandom.current().nextInt(1, (waveNumber + 10) + 1);
+				enemyAttack = ThreadLocalRandom.current().nextInt(1, (waveNumber + 1) + 1);
+				enemyDefence = ThreadLocalRandom.current().nextInt(1, (waveNumber + 3) + 1);
+				if (ThreadLocalRandom.current().nextInt(1, (2) + 1) == 1) {
+					enemyLabel.setIcon(new ImageIcon("C:\\Users\\npoll\\Desktop\\mushroom.png"));
+					enemyPanel.add(enemyLabel);
+					enemyName = "Mushroom of Doom";
+				} else {
+					enemyLabel.setIcon(new ImageIcon("C:\\Users\\npoll\\Desktop\\mushroom2.png"));
+					enemyPanel.add(enemyLabel);
+					enemyName = "Mushroom of Doom";
+				}
+				int weapon = ThreadLocalRandom.current().nextInt(0, (2) + 1);
+				if (weapon == 0) {
+					enemyWeapon = "Toxin";
+				}
+				if (weapon == 1) {
+					enemyWeapon = "Foul Smell";
+				}
+				if (weapon == 2) {
+					enemyWeapon = "Root Grab";
+				}
+			}
+
+			updateEnemyStats();
+		}
+	}
+
+	public static void main(String[] args) {
+		main t = new main();
+	}
+}
